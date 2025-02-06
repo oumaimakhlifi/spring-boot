@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  springboot-backend:
+    image: oumaimakhelifi/springboot-app:latest  # Utilisation de l'image depuis Docker Hub
+    deploy:
+      replicas: 3  # Nombre de répliques pour la haute disponibilité
+      placement:
+        constraints:
+          - node.role == worker  # S'assurer que les instances tournent sur les workers
+      restart_policy:
+        condition: on-failure
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod  # Profil Spring Boot en mode production
+    ports:
+      - "8080:8080"  # Exposition du port 8080
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: overlay  # Réseau overlay pour la communication inter-services
